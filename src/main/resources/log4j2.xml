@@ -1,0 +1,66 @@
+<Configuration status="WARN" monitorInterval="30">
+    <Properties>
+        <Property name="instance">sample-sso</Property>
+        <Property name="log.dir">log</Property>
+        <Property name="file.parttern">
+            [%date{yyyyMMdd HHmmss SSS}][%level][%trace][%thread][%class.%method][%line]:%message%n
+        </Property>
+        <Property name="console.parttern">
+            [%date{yyyyMMdd HHmmss SSS}][%level][%trace][%thread][%class.%method][%line]:%message%n
+        </Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${console.parttern}"/>
+        </Console>
+        <RollingRandomAccessFile name="infoLog" fileName="${log.dir}/${instance}-info.log"
+                                 filePattern="${log.dir}/%d{yyyy-MM}/${instance}-info-%d{yyyy-MM-dd-HH}-%i.log"
+                                 append="true">
+            <PatternLayout pattern="${file.parttern}"/>
+            <Filters>
+                <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="NEUTRAL"/>
+            </Filters>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="20 MB"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="warnLog" fileName="${log.dir}/${instance}-warn.log"
+                                 filePattern="${log.dir}/%d{yyyy-MM}/${instance}-warn-%d{yyyy-MM-dd-HH}-%i.log"
+                                 append="true">
+            <Filters>
+                <ThresholdFilter level="error" onMatch="DENY" onMismatch="NEUTRAL"/>
+                <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout pattern="${file.parttern}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="20 MB"/>
+            </Policies>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="errorLog" fileName="${log.dir}/${instance}-error.log"
+                                 filePattern="${log.dir}/%d{yyyy-MM}/${instance}-error-%d{yyyy-MM-dd-HH}-%i.log"
+                                 append="true">
+            <Filters>
+                <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout pattern="${file.parttern}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="20 MB"/>
+            </Policies>
+        </RollingRandomAccessFile>
+    </Appenders>
+
+    <Loggers>
+        <!-- root logger 配置 -->
+        <Root level="info" includeLocation="true">
+            <AppenderRef ref="infoLog"/>
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="warnLog"/>
+            <AppenderRef ref="errorLog"/>
+        </Root>
+    </Loggers>
+</Configuration>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aiwm.sample.sso.data.mapper.NfCustomerAccountMapper" >
+  <resultMap id="BaseResultMap" type="com.aiwm.sample.sso.data.model.NfCustomerAccount" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    <id column="caid" property="caid" jdbcType="INTEGER" />
+    <result column="cbiid" property="cbiid" jdbcType="INTEGER" />
+    <result column="loginname" property="loginname" jdbcType="VARCHAR" />
+    <result column="loginalias" property="loginalias" jdbcType="VARCHAR" />
+    <result column="interface_password" property="interfacePassword" jdbcType="VARCHAR" />
+    <result column="loginpwd" property="loginpwd" jdbcType="VARCHAR" />
+    <result column="accountname" property="accountname" jdbcType="VARCHAR" />
+    <result column="clv_type" property="clvType" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="tel" property="tel" jdbcType="VARCHAR" />
+    <result column="locked" property="locked" jdbcType="INTEGER" />
+    <result column="locked_start_time" property="lockedStartTime" jdbcType="VARCHAR" />
+    <result column="locked_time" property="lockedTime" jdbcType="INTEGER" />
+    <result column="desc" property="desc" jdbcType="VARCHAR" />
+    <result column="restrict_ip" property="restrictIp" jdbcType="VARCHAR" />
+    <result column="check_phone" property="checkPhone" jdbcType="VARCHAR" />
+    <result column="customer_from" property="customerFrom" jdbcType="VARCHAR" />
+    <result column="domain_code" property="domainCode" jdbcType="VARCHAR" />
+    <result column="domain_name" property="domainName" jdbcType="VARCHAR" />
+    <result column="demand_desc" property="demandDesc" jdbcType="VARCHAR" />
+    <result column="allo_status" property="alloStatus" jdbcType="INTEGER" />
+    <result column="cmgr_id" property="cmgrId" jdbcType="INTEGER" />
+    <result column="oppwd" property="oppwd" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    <!--
+      WARNING - @mbggenerated
+    -->
+    caid, cbiid, loginname, loginalias, interface_password, loginpwd, accountname, clv_type, 
+    email, tel, locked, locked_start_time, locked_time, desc, restrict_ip, check_phone, 
+    customer_from, domain_code, domain_name, demand_desc, allo_status, cmgr_id, oppwd
+  </sql>
+
+  <insert id="regist" parameterType="com.aiwm.sample.sso.data.model.NfCustomerAccount">
+  INSERT INTO nf_customer_account
+    SET
+      loginname=#{loginname},
+      loginpwd=#{loginpwd},
+      accountname=#{accountname},
+      email=#{email}
+  </insert>
+
+  <select id="login" resultType="com.aiwm.sample.sso.data.model.NfCustomerAccount">
+    SELECT * FROM nf_customer_account WHERE loginname=#{loginname} AND loginpwd=#{loginpwd}
+  </select>
+
+  <select id="checkAccount"  resultType="com.aiwm.sample.sso.data.model.NfCustomerAccount">
+    SELECT * FROM nf_customer_account WHERE accountname=#{accountname}
+  </select>
+
+  <update id="updateToken" parameterType="com.aiwm.sample.sso.data.model.NfCustomerAccount">
+    UPDATE nf_customer_account SET customer_from=#{accountToken} WHERE loginname=#{loginname}
+  </update>
+  <select id="checkToken" resultType="com.aiwm.sample.sso.data.model.NfCustomerAccount">
+    select * from nf_customer_account WHERE customer_from=#{accountToken}
+  </select>
+</mapper>

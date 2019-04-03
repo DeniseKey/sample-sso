@@ -1,0 +1,21 @@
+spring:
+    mvc:
+      view:
+        prefix: /WEB-INF/jsp/
+        suffix: .jsp
+
+server:
+  context-path: /sso-service
+  port: 8082
+
+datasource:
+  mysqlConnect:
+    driver-class-name: com.mysql.jdbc.Driver
+    jdbcUrl: jdbc:mysql://10.1.249.198:3306/aiddos20190121?allowMultiQueries=true&useUnicode=true&characterEncoding=utf8
+    maxLifetime: 600000
+    idleTimeout: 300000
+    maximumPoolSize: 100
+    minimumIdle: 50
+    username: aiddos
+    password: asiainfo
+
