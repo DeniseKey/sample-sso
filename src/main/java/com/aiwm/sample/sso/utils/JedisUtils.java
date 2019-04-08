@@ -115,7 +115,21 @@ public class JedisUtils {
         return result;
 
     }
-
+    //exTime的单位是秒
+    public static String setObjectEx(String key,Object value,int exTime){
+        Jedis jedis = null;
+        String result = null;
+        try {
+            jedis = RedisPool.getJedis();
+            result = jedis.setex(key.getBytes(),exTime,serialize(value));
+        } catch (Exception e) {
+            log.error("setex key:{} value:{} error",key,value,e);
+            RedisPool.close(jedis);
+            return result;
+        }
+        RedisPool.close(jedis);
+        return result;
+    }
     public static Object getObject(String key){
         Jedis jedis = null;
         Object unserialize = null;

@@ -5,6 +5,7 @@ import com.aiwm.sample.sso.common.*;
 import com.aiwm.sample.sso.data.model.NfCustomerAccount;
 import com.aiwm.sample.sso.utils.HttpClientUtils;
 import com.aiwm.sample.sso.data.service.AccountService;
+import com.aiwm.sample.sso.utils.JedisUtils;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by fengmc on 2019/3/26
@@ -82,7 +84,7 @@ public class LoginController {
      * @return
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String login(@Param("loginname") String loginname, @Param("loginpwd") String loginpwd, HttpServletRequest request) {
+    public String login(@Param("loginname") String loginname, @Param("loginpwd") String loginpwd, HttpServletRequest request,HttpServletResponse response) {
         LogMessage logMessage = new LogMessage(this.getClass().getSimpleName(), "login").success();
         logMessage.append("loginname", loginname).append("loginpwd", loginpwd);
 
@@ -90,8 +92,22 @@ public class LoginController {
             //获取sessionID
             String sessionIdByCookie = LoginHelper.getSessionIdByCookie(request);
             if(StringUtils.isBlank(sessionIdByCookie)){
-                return "errorPage";
+                //创建cookie
+                String sessionId = UUID.randomUUID().toString();
+                LoginHelper.setSessionIdInCookie(response,sessionId);
+                //创建校验token
+                String token = UUID.randomUUID().toString();
+                //以cookie的value为key，保存到redis中
+                JedisUtils.setEx(sessionId,token,Conf.REDISSECOND);
+
+                //跳转到首次访问的项目页面
+                String redirectUrl1 = (String) request.getSession().getAttribute("redirectUrl");
+                return "redirect:" + redirectUrl1;
             }else {
+
+
+
+
                 //根据sessionID库里查询是否存在
                 NfCustomerAccount ssoLoginStore = getSsoLoginStore(sessionIdByCookie);
                 if (ssoLoginStore != null) {
